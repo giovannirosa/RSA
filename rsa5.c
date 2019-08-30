@@ -15,22 +15,21 @@ int main() {
   BN_CTX *ctx = BN_CTX_new();
   BIGNUM *e = BN_new();
   BIGNUM *n = BN_new();
+  BIGNUM *m_verify = BN_new();
   BIGNUM *m = BN_new();
-  BIGNUM *d = BN_new();
-  BIGNUM *c = BN_new();
+  BIGNUM *s = BN_new();
 
   // Assign a value from a hex number string
-  BN_hex2bn(&n,
-            "DCBFFE3E51F62E09CE7032E2677A78946A849DC4CDDE3A4D0CB81629242FB1A5");
-  BN_hex2bn(&d,
-            "74D806F9F3A62BAE331FFE3F0A68AFE35B3D2E4794148AACBC26AA381CD7D30D");
+  BN_hex2bn(&n, "AE1CD4DC432798D933779FBD46C6E1247F0CF1233595113AA51B450F18116115");
   BN_hex2bn(&e, "010001");
-  BN_hex2bn(&c, "8C0F971DF2F3672B28811407E2DABBE1DA0FEBBBDFC7DCB67396567EA1E2493F");
+  BN_hex2bn(&s, "643D6F34902D9C7EC90CB0B2BCA36C47FA37165C0005CAB026C0542CBDB6803F");
+  // Launch a missile.
+  BN_hex2bn(&m_verify, "4c61756e63682061206d697373696c652e");
 
-  // Decipher message
-  BN_mod_exp(m, c, d, n, ctx);
+  // Verify signature
+  BN_mod_exp(m, s, e, n, ctx);
 
-  printBN("m = ", m);
+  printf("signature = %s\n", BN_cmp(m_verify, m) == 0 ? "CORRECT" : "WRONG");
 
   BN_CTX_free(ctx);
 
